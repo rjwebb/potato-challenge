@@ -40,9 +40,12 @@ class ProjectForm(BaseTrackerForm):
     def pre_save(self, instance):
         instance.created_by = self.user
 
+class EmailChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return obj.email
 
 class TicketForm(BaseTrackerForm):
-    assignees = forms.ModelMultipleChoiceField(queryset=None, required=False)
+    assignees = EmailChoiceField(queryset=None, required=False)
 
     class Meta:
         model = Ticket
