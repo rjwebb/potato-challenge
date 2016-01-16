@@ -6,6 +6,7 @@
 		<h2>{{ project.title }} <small><a href="{% url "project-update" project_id=project.pk %}">edit</a></small></h2>
 	</div>
 	<div class="row">
+		{% if tickets %}
 		<table>
 			<thead>
 				<tr>
@@ -34,6 +35,9 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		{% else %}
+		No tickets have been created for this project
+		{% endif %}
 	</div>
 	<div class="row">
 		<p><a href="{% url "ticket-create" project_id=project.pk %}" class="button">Create ticket</a></p>
