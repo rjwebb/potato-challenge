@@ -20,9 +20,13 @@
 				<tr>
 					<td>{{ ticket.title }}</td>
 					<td>
+					{% if ticket.assignees.all %}
 					{% for user in ticket.assignees.all %}
 						{{ user.email }}{% if not forloop.last %},{% endif %}
 					{% endfor %}
+					{% else %}
+					No assigned users
+					{% endif %}
 					</td>
 					<td>
 						<a href="{% url "ticket-update" project_id=project.pk ticket_id=ticket.pk %}">
