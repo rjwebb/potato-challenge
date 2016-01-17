@@ -46,6 +46,7 @@ class EmailChoiceField(forms.ModelMultipleChoiceField):
 
 class TicketForm(BaseTrackerForm):
     assignees = EmailChoiceField(queryset=None, required=False)
+    assignees.help_text = ''
 
     class Meta:
         model = Ticket
