@@ -145,8 +145,9 @@ update_ticket_view = login_required(UpdateTicketView.as_view())
 
 class DeleteTicketView(ProjectContextMixin, DeleteView):
     model = Ticket
+    pk_url_kwarg = 'ticket_id'
 
     def get_success_url(self):
-        return reverse("project-list")
+        return reverse("project-detail", kwargs={"project_id": self.kwargs['project_id']})
 
 delete_ticket_view = login_required(DeleteTicketView.as_view())
