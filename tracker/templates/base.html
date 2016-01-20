@@ -16,6 +16,7 @@
 	{% else %}
 	<script src="{{ STATIC_URL }}js/modernizr.js"></script>
 	{% endif %}
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/chosen.min.css">
 	<link rel="stylesheet" href="{{ STATIC_URL }}css/tracker.css">
 </head>
 <body>
@@ -92,8 +93,6 @@
 			<script src="{{ STATIC_URL }}components/foundation/js/foundation.min.js"></script>
 			<script src="{{ STATIC_URL }}components/chosen/chosen.jquery.min.js"></script>
 			<script src="{{ STATIC_URL }}js/app.js"></script>
-
-			<link rel="stylesheet" href="{{ STATIC_URL }}components/chosen/chosen.min.css">
 			{% else %}
 			<script src="{{ STATIC_URL }}js/app.built.js"></script>
 			{% endif %}
