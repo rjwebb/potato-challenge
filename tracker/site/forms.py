@@ -60,7 +60,7 @@ class TicketForm(BaseTrackerForm):
         self.fields['assignees'].queryset = get_user_model().objects.all()
 
     def clean(self):
-        cleaned_data = super(TicketForm, self).clean()
+        super(TicketForm, self).clean()
 
         # prevent this form from changing the project ID of this ticket
         try:

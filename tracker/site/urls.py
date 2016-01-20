@@ -9,7 +9,6 @@ from .views import (
     update_ticket_view,
     delete_ticket_view,
     project_list_view,
-    update_project_view
 )
 
 

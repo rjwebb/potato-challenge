@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.http import Http404
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.test.client import RequestFactory
 
 from .models import Project, Ticket
@@ -79,7 +79,7 @@ class ProjectCreateViewTest(BaseTestCase):
         # this should raise an error since it is an
         # invalid request
         with self.assertRaises(AttributeError):
-            resp = create_project_view(req)
+            create_project_view(req)
 
 
 class ProjectUpdateViewTest(BaseTestCase):
@@ -103,8 +103,11 @@ class ProjectUpdateViewTest(BaseTestCase):
         req.user = self.user2
 
         resp = update_project_view(req, project_id=project_id)
+
+        # redirect to project list page
         self.assertEqual(resp.status_code, 302)
 
+        # assert that the object was changed
         p = Project.objects.get(pk=project_id)
         self.assertEqual(p.title, 'Burping Competition')
         self.assertEqual(p.created_by, self.user2)
@@ -132,7 +135,7 @@ class ProjectUpdateViewTest(BaseTestCase):
         req = self.factory.post('/', {})
 
         with self.assertRaises(AttributeError):
-            resp = update_project_view(req, project_id=project_id)
+            update_project_view(req, project_id=project_id)
 
 
 class ProjectViewTest(BaseTestCase):
@@ -165,7 +168,7 @@ class ProjectViewTest(BaseTestCase):
         req.user = self.user
 
         with self.assertRaises(Http404):
-            resp = project_view(req, project_id=project_id)
+            project_view(req, project_id=project_id)
 
 
 class MyTicketsViewTest(BaseTestCase):
@@ -262,7 +265,8 @@ class CreateTicketViewTest(BaseTestCase):
         self.assertEquals(resp.status_code, 302)
 
         # try to get the new ticket
-        new_ticket = Ticket.objects.get(title='ticket 1', project=self.project)
+        # if it hasn't been created, this will fail
+        Ticket.objects.get(title='ticket 1', project=self.project)
 
     def test_no_title(self):
         req = self.factory.post('/')
@@ -278,7 +282,7 @@ class CreateTicketViewTest(BaseTestCase):
         })
 
         with self.assertRaises(AttributeError):
-            resp = create_ticket_view(req, project_id=self.project.pk)
+            create_ticket_view(req, project_id=self.project.pk)
 
 
 class UpdateTicketViewTest(BaseTestCase):
@@ -332,8 +336,7 @@ class UpdateTicketViewTest(BaseTestCase):
         req.user = self.user2
 
         with self.assertRaises(KeyError):
-            resp = update_ticket_view(req,
-                                      ticket_id=self.ticket.pk)
+            update_ticket_view(req, ticket_id=self.ticket.pk)
 
     def test_no_ticket_id(self):
         req = self.factory.post('/', {
@@ -343,8 +346,7 @@ class UpdateTicketViewTest(BaseTestCase):
         req.user = self.user2
 
         with self.assertRaises(AttributeError):
-            resp = update_ticket_view(req,
-                                      project_id=self.project.pk)
+            update_ticket_view(req, project_id=self.project.pk)
 
 
     def test_change_project_id_fail(self):
@@ -406,6 +408,6 @@ class DeleteTicketViewTest(BaseTestCase):
         req.user = self.user
 
         with self.assertRaises(Http404):
-            resp = delete_ticket_view(req,
-                                      project_id=self.project.pk,
-                                      ticket_id=self.ticket.pk)
+            delete_ticket_view(req,
+                               project_id=self.project.pk,
+                               ticket_id=self.ticket.pk)
