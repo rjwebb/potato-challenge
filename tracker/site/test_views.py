@@ -37,9 +37,36 @@ class ProjectListViewTest(BaseTestCase):
         proj = Project.objects.create(title='Library Thinger', created_by=user)
 
         req = self.factory.get('/')
+        req.user = user
+
         resp = project_list_view(req)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(list(resp.context_data['project_list']), [proj])
+
+    def test_view_projects_listed_alphabetically(self):
+        user = User.objects.create_user('cool guy', 'coolguy@example.com')
+        proj = Project.objects.create(title='Book Eater', created_by=user)
+        proj2 = Project.objects.create(title='Library Thinger', created_by=user)
+
+        req = self.factory.get('/')
+
+        resp = project_list_view(req)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(list(resp.context_data['object_list']), [proj2, proj])
+
+    def test_view_assigned_projects_come_first(self):
+        user = User.objects.create_user('cool guy', 'coolguy@example.com')
+        proj = Project.objects.create(title='Book Eater', created_by=user)
+        proj2 = Project.objects.create(title='Library Thinger', created_by=user)
+
+        t = Ticket.objects.create(title="fjdkfsd", project=proj2, created_by=user, assignees=[user])
+
+        req = self.factory.get('/')
+        req.user = user
+
+        resp = project_list_view(req)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(list(resp.context_data['object_list']), [proj2, proj])
 
 
 class ProjectCreateViewTest(BaseTestCase):

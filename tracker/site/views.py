@@ -52,7 +52,7 @@ class ProjectListView(ListView):
 
         # only need to put projects that have tickets assigned to the user,
         # if the user is logged in
-        if self.request.user.is_authenticated():
+        if hasattr(self.request, 'user') and self.request.user.is_authenticated():
             # the IDs of all of the tickets assigned to the user
             user_ticket_ids = list(self.request.user.tickets.values_list('id', flat=True))
 
