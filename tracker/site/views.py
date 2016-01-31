@@ -54,7 +54,7 @@ class ProjectListView(ListView):
         # if the user is logged in
         if self.request.user.is_authenticated():
             # the IDs of all of the tickets assigned to the user
-            user_ticket_ids = [t.id for t in self.request.user.tickets.all()]
+            user_ticket_ids = list(self.request.user.tickets.values_list('id', flat=True))
 
             # projects with tickets assigned to the user
             projects_for_user = []
