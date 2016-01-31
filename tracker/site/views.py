@@ -47,6 +47,35 @@ class ProjectListView(ListView):
     model = Project
     template_name = "site/project_list.html"
 
+    def get_context_data(self, **kwargs):
+        context_data = super(ProjectListView, self).get_context_data(**kwargs)
+
+        # only need to put projects that have tickets assigned to the user,
+        # if the user is logged in
+        if self.request.user.is_authenticated():
+            # the IDs of all of the tickets assigned to the user
+            user_ticket_ids = [t.id for t in self.request.user.tickets.all()]
+
+            # projects with tickets assigned to the user
+            projects_for_user = []
+
+            # projects with no tickets assigned to the user
+            projects_not_for_user = []
+
+            for p in context_data['object_list']:
+                # filter tickets assigned to the user
+                assigned_tickets = p.tickets.filter(id__in=user_ticket_ids)
+
+                # if there are any such tickets
+                if assigned_tickets.exists():
+                    projects_for_user.append(p)
+                else:
+                    projects_not_for_user.append(p)
+
+            # put the projects with tickets assigned to the user first
+            context_data['object_list'] = projects_for_user + projects_not_for_user
+
+        return context_data
 
 project_list_view = ProjectListView.as_view()
 
